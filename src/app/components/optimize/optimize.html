@@ -1,114 +1,120 @@
 <div class="optimize-container">
   <div class="optimize-header">
-    <h1>Schedule Optimization</h1>
-    <p>Analyze and optimize your appointment schedule for maximum efficiency</p>
+    <h1>Optimize My Week</h1>
+    <p>AI-powered schedule optimization to maximize your productivity</p>
   </div>
 
-  <div class="metrics-grid">
-    <div class="metric-card">
-      <div class="metric-icon">📊</div>
-      <div class="metric-content">
-        <div class="metric-value">{{ metrics.utilization }}%</div>
-        <div class="metric-label">Schedule Utilization</div>
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-icon">⏱️</div>
-      <div class="metric-content">
-        <div class="metric-value">{{ metrics.avgGapTime }}m</div>
-        <div class="metric-label">Avg Gap Time</div>
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-icon">⚠️</div>
-      <div class="metric-content">
-        <div class="metric-value">{{ metrics.conflicts }}</div>
-        <div class="metric-label">Conflicts</div>
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-icon">🎯</div>
-      <div class="metric-content">
-        <div class="metric-value">{{ metrics.efficiency }}%</div>
-        <div class="metric-label">Efficiency Score</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="optimize-card">
-    <div class="card-header">
-      <h2>AI-Powered Optimization</h2>
-      <p>Let our AI analyze your schedule and suggest improvements</p>
-    </div>
-
-    @if (!result && !analyzing) {
-      <div class="optimize-action">
-        <button class="optimize-btn" (click)="runOptimization()">
-          <span class="btn-icon">🤖</span>
-          <span>Analyze Schedule</span>
+  @if (!hasResults) {
+    <div class="optimize-intro">
+      <div class="intro-card">
+        <h2>How It Works</h2>
+        <ul>
+          <li>Analyzes your current week's schedule</li>
+          <li>Identifies inefficiencies and conflicts</li>
+          <li>Suggests optimal meeting arrangements</li>
+          <li>Maximizes focus time and minimizes gaps</li>
+        </ul>
+        <button class="primary-btn" (click)="runOptimization()" [disabled]="analyzing">
+          @if (analyzing) {
+            <span class="spinner"></span>
+            Analyzing...
+          } @else {
+            Run Optimization
+          }
         </button>
       </div>
-    }
+    </div>
+  } @else {
+    <div class="results-container">
+      <!-- Comparison Cards -->
+      <div class="comparison-grid">
+        <div class="week-card current">
+          <h3>Current Week</h3>
+          <div class="score" [style.color]="getScoreColor(currentWeek?.score || 0)">
+            {{ currentWeek?.score || 0 }}%
+          </div>
+          <div class="metrics">
+            <div class="metric">
+              <span class="metric-label">Total Meetings</span>
+              <span class="metric-value">{{ currentWeek?.totalMeetings || 0 }}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Back-to-Back</span>
+              <span class="metric-value">{{ currentWeek?.backToBackCount || 0 }}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Avg Gap</span>
+              <span class="metric-value">{{ currentWeek?.avgGapMinutes || 0 }}m</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Focus Time</span>
+              <span class="metric-value">{{ currentWeek?.focusTimeHours || 0 }}h</span>
+            </div>
+          </div>
+        </div>
 
-    @if (analyzing) {
-      <div class="analyzing">
-        <div class="spinner"></div>
-        <p>Analyzing your schedule...</p>
+        <div class="arrow-card">
+          <div class="arrow">→</div>
+          <div class="improvement">
+            +{{ (optimizedWeek?.score || 0) - (currentWeek?.score || 0) }}%
+          </div>
+        </div>
+
+        <div class="week-card optimized">
+          <h3>Optimized Week</h3>
+          <div class="score" [style.color]="getScoreColor(optimizedWeek?.score || 0)">
+            {{ optimizedWeek?.score || 0 }}%
+          </div>
+          <div class="metrics">
+            <div class="metric">
+              <span class="metric-label">Total Meetings</span>
+              <span class="metric-value">{{ optimizedWeek?.totalMeetings || 0 }}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Back-to-Back</span>
+              <span class="metric-value">{{ optimizedWeek?.backToBackCount || 0 }}</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Avg Gap</span>
+              <span class="metric-value">{{ optimizedWeek?.avgGapMinutes || 0 }}m</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Focus Time</span>
+              <span class="metric-value">{{ optimizedWeek?.focusTimeHours || 0 }}h</span>
+            </div>
+          </div>
+        </div>
       </div>
-    }
 
-    @if (result && !analyzing) {
-      <div class="results">
-        <div class="results-header">
-          <div class="success-icon">✅</div>
-          <h3>Optimization Complete!</h3>
-          <p class="savings">You can save {{ result.saved }} hours per week</p>
-        </div>
-
-        <div class="suggestions">
-          <h4>Suggested Improvements:</h4>
-          <ul>
-            @for (suggestion of result.suggestions; track suggestion) {
-              <li>{{ suggestion }}</li>
-            }
-          </ul>
-        </div>
-
-        <div class="results-actions">
-          <button class="secondary-btn" (click)="result = null">Dismiss</button>
-          <button class="primary-btn" (click)="applyOptimization()">Apply Changes</button>
+      <!-- Changes List -->
+      <div class="changes-section">
+        <h2>Proposed Changes</h2>
+        <div class="changes-list">
+          @for (change of changes; track change.appointmentId) {
+            <div class="change-card">
+              <div class="change-icon">📅</div>
+              <div class="change-details">
+                <div class="change-times">
+                  <span class="from-time">{{ formatDate(change.from) }} {{ formatTime(change.from) }}</span>
+                  <span class="arrow">→</span>
+                  <span class="to-time">{{ formatDate(change.to) }} {{ formatTime(change.to) }}</span>
+                </div>
+                <div class="change-reason">{{ change.reason }}</div>
+              </div>
+            </div>
+          }
         </div>
       </div>
-    }
-  </div>
 
-  <div class="tips-card">
-    <h3>Optimization Tips</h3>
-    <div class="tips-list">
-      <div class="tip-item">
-        <span class="tip-icon">💡</span>
-        <div class="tip-content">
-          <strong>Batch Similar Appointments</strong>
-          <p>Group similar appointment types together to maintain focus and reduce context switching</p>
-        </div>
-      </div>
-      <div class="tip-item">
-        <span class="tip-icon">⏰</span>
-        <div class="tip-content">
-          <strong>Minimize Gaps</strong>
-          <p>Reduce idle time between appointments to maximize productivity</p>
-        </div>
-      </div>
-      <div class="tip-item">
-        <span class="tip-icon">🎯</span>
-        <div class="tip-content">
-          <strong>Peak Hours</strong>
-          <p>Schedule demanding sessions during your peak energy hours</p>
-        </div>
+      <!-- Actions -->
+      <div class="actions">
+        <button class="approve-btn" (click)="applyOptimization()">
+          Apply Optimization
+        </button>
+        <button class="reject-btn" (click)="rejectOptimization()">
+          Reject Changes
+        </button>
       </div>
     </div>
-  </div>
+  }
 </div>

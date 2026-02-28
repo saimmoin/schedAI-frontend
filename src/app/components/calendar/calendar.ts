@@ -2,12 +2,12 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions, EventClickArg } from '@fullcalendar/core';
+import { CalendarOptions, EventClickArg, EventDropArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Router } from '@angular/router';
-import { Api, Appointment } from '../../core/api';
+import { Api, Appointment, Conflict } from '../../core/api';
 
 @Component({
   selector: 'app-calendar',
@@ -16,6 +16,10 @@ import { Api, Appointment } from '../../core/api';
   styleUrl: './calendar.css',
 })
 export class Calendar implements OnInit {
+  conflict: Conflict | null = null;
+  showConflictBanner = false;
+  waitlistNotification: string | null = null;
+
   calendarOptions = signal<CalendarOptions>({
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     initialView: 'timeGridWeek',
@@ -31,8 +35,10 @@ export class Calendar implements OnInit {
     weekends: true,
     slotMinTime: '08:00:00',
     slotMaxTime: '20:00:00',
+    slotDuration: '00:30:00',
     events: [],
     eventClick: this.handleEventClick.bind(this),
+    eventDrop: this.handleEventDrop.bind(this),
     select: this.handleDateSelect.bind(this)
   });
 
@@ -46,9 +52,9 @@ export class Calendar implements OnInit {
     this.api.getAppointments().subscribe(appointments => {
       const events = appointments.map(apt => ({
         id: apt.id,
-        title: apt.clientName,
-        start: apt.start,
-        end: apt.end,
+        title: `${apt.guestName} - ${apt.title}`,
+        start: apt.startTime,
+        end: apt.endTime,
         backgroundColor: this.getEventColor(apt.status),
         borderColor: this.getEventColor(apt.status),
         extendedProps: {
@@ -67,8 +73,7 @@ export class Calendar implements OnInit {
     const colors: Record<string, string> = {
       'scheduled': '#3b82f6',
       'completed': '#10b981',
-      'cancelled': '#ef4444',
-      'no-show': '#f59e0b'
+      'cancelled': '#ef4444'
     };
     return colors[status] || '#6b7280';
   }
@@ -77,16 +82,69 @@ export class Calendar implements OnInit {
     const appointment = clickInfo.event.extendedProps['appointment'] as Appointment;
     if (appointment.status === 'completed') {
       this.router.navigate(['/debrief', appointment.id]);
-    } else if (appointment.roomUrl) {
-      this.router.navigate([appointment.roomUrl]);
+    } else {
+      this.router.navigate(['/meeting', appointment.id]);
     }
+  }
+
+  handleEventDrop(dropInfo: EventDropArg): void {
+    const appointment = dropInfo.event.extendedProps['appointment'] as Appointment;
+    const newStart = dropInfo.event.start!;
+    const newEnd = dropInfo.event.end!;
+
+    // Update appointment
+    this.api.updateAppointment(appointment.id, {
+      startTime: newStart,
+      endTime: newEnd
+    }).subscribe(result => {
+      if (result.conflict && result.conflict.conflict) {
+        this.conflict = result.conflict;
+        this.showConflictBanner = true;
+        
+        // Revert the event
+        dropInfo.revert();
+      } else {
+        // Check if waitlist was auto-booked
+        if (result.appointment) {
+          this.loadAppointments();
+        }
+      }
+    });
   }
 
   handleDateSelect(selectInfo: any): void {
     this.router.navigate(['/booking'], {
       queryParams: {
-        date: selectInfo.startStr
+        start: selectInfo.startStr,
+        end: selectInfo.endStr
       }
     });
+  }
+
+  deleteAppointment(id: string): void {
+    if (confirm('Are you sure you want to delete this appointment?')) {
+      this.api.deleteAppointment(id).subscribe(result => {
+        if (result.success) {
+          this.loadAppointments();
+          
+          if (result.waitlistBooked) {
+            this.waitlistNotification = `${result.waitlistBooked} was auto-booked into this slot`;
+            setTimeout(() => {
+              this.waitlistNotification = null;
+            }, 5000);
+          }
+        }
+      });
+    }
+  }
+
+  resolveConflict(): void {
+    this.showConflictBanner = false;
+    this.conflict = null;
+  }
+
+  dismissConflict(): void {
+    this.showConflictBanner = false;
+    this.conflict = null;
   }
 }

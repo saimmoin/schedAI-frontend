@@ -3,84 +3,123 @@
     <h1>Dashboard</h1>
     <div class="header-actions">
       <button routerLink="/booking" class="primary-btn">New Appointment</button>
+      <button routerLink="/calendar" class="secondary-btn">View Calendar</button>
     </div>
   </div>
-
-  <app-conflict-banner />
 
   @if (loading) {
     <div class="loading">Loading...</div>
   } @else {
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">📅</div>
-        <div class="stat-content">
-          <div class="stat-value">{{ stats.today }}</div>
-          <div class="stat-label">Today's Appointments</div>
-        </div>
+    <!-- Week Efficiency Score -->
+    <div class="efficiency-card">
+      <div class="efficiency-header">
+        <h2>Week Efficiency Score</h2>
+        <button routerLink="/optimize" class="optimize-link">Optimize →</button>
       </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">📊</div>
-        <div class="stat-content">
-          <div class="stat-value">{{ stats.thisWeek }}</div>
-          <div class="stat-label">This Week</div>
-        </div>
+      <div class="efficiency-score" [style.color]="getEfficiencyColor(weekEfficiency?.score || 0)">
+        {{ weekEfficiency?.score || 0 }}%
       </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">⚠️</div>
-        <div class="stat-content">
-          <div class="stat-value">{{ stats.conflicts }}</div>
-          <div class="stat-label">Conflicts</div>
+      <div class="efficiency-stats">
+        <div class="stat-item">
+          <span class="stat-label">Total Meetings</span>
+          <span class="stat-value">{{ weekEfficiency?.totalMeetings || 0 }}</span>
         </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">⏳</div>
-        <div class="stat-content">
-          <div class="stat-value">{{ stats.waitlist }}</div>
-          <div class="stat-label">Waitlist</div>
+        <div class="stat-item">
+          <span class="stat-label">Back-to-Back</span>
+          <span class="stat-value">{{ weekEfficiency?.backToBackCount || 0 }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Avg Gap</span>
+          <span class="stat-value">{{ weekEfficiency?.avgGapMinutes || 0 }}m</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Focus Time</span>
+          <span class="stat-value">{{ weekEfficiency?.focusTimeHours || 0 }}h</span>
         </div>
       </div>
     </div>
 
-    <div class="dashboard-content">
-      <div class="main-section">
-        <section class="appointments-section">
-          <h2>Today's Appointments</h2>
-          @if (todayAppointments.length === 0) {
-            <div class="empty-state">
-              <p>No appointments scheduled for today</p>
-            </div>
-          } @else {
-            <div class="appointments-list">
-              @for (appointment of todayAppointments; track appointment.id) {
-                <app-appointment-card [appointment]="appointment" />
-              }
+    <!-- Today's Appointments -->
+    <section class="appointments-section">
+      <h2>Today's Schedule</h2>
+      @if (todayAppointments.length === 0) {
+        <div class="empty-state">
+          <p>No appointments scheduled for today</p>
+          <button routerLink="/booking" class="primary-btn">Schedule One</button>
+        </div>
+      } @else {
+        <div class="appointments-list">
+          @for (appointment of todayAppointments; track appointment.id) {
+            <div class="appointment-card" [routerLink]="['/meeting', appointment.id]">
+              <div class="appointment-time">{{ formatTime(appointment.startTime) }}</div>
+              <div class="appointment-details">
+                <div class="appointment-title">{{ appointment.title }}</div>
+                <div class="appointment-guest">{{ appointment.guestName }}</div>
+              </div>
+              <div class="appointment-status">
+                <span class="status-badge">{{ appointment.status }}</span>
+              </div>
             </div>
           }
-        </section>
+        </div>
+      }
+    </section>
 
-        <section class="appointments-section">
-          <h2>Upcoming Appointments</h2>
-          @if (upcomingAppointments.length === 0) {
-            <div class="empty-state">
-              <p>No upcoming appointments</p>
+    <!-- Team Strip -->
+    <section class="team-strip">
+      <h3>Workspace Team</h3>
+      <div class="team-members">
+        @for (member of teammates; track member.id) {
+          <div class="team-member">
+            <div class="member-avatar">{{ member.user.name.charAt(0) }}</div>
+            <div class="member-info">
+              <div class="member-name">{{ member.user.name }}</div>
+              <div class="member-status">
+                <span class="status-dot" [style.background-color]="getFreeBusyColor(member.freeBusyStatus)"></span>
+                <span class="status-text">{{ member.freeBusyStatus || 'unknown' }}</span>
+              </div>
             </div>
-          } @else {
-            <div class="appointments-list">
-              @for (appointment of upcomingAppointments; track appointment.id) {
-                <app-appointment-card [appointment]="appointment" />
-              }
-            </div>
-          }
-        </section>
+          </div>
+        }
       </div>
+    </section>
 
-      <aside class="sidebar-section">
-        <app-waitlist-panel />
-      </aside>
+    <!-- Waitlist Badge -->
+    <div class="waitlist-badge" (click)="toggleWaitlist()" [class.active]="waitlistCount > 0">
+      <span class="badge-icon">⏳</span>
+      <span class="badge-count">{{ waitlistCount }}</span>
+      <span class="badge-label">Waitlist</span>
     </div>
+
+    <!-- Waitlist Panel -->
+    @if (showWaitlist) {
+      <div class="waitlist-overlay" (click)="toggleWaitlist()">
+        <div class="waitlist-panel" (click)="$event.stopPropagation()">
+          <div class="panel-header">
+            <h3>Waitlist</h3>
+            <button class="close-btn" (click)="toggleWaitlist()">×</button>
+          </div>
+          <div class="panel-content">
+            @if (waitlistEntries.length === 0) {
+              <div class="empty-state">No one on waitlist</div>
+            } @else {
+              @for (entry of waitlistEntries; track entry.id) {
+                <div class="waitlist-entry">
+                  <div class="entry-info">
+                    <div class="entry-name">{{ entry.guestName }}</div>
+                    <div class="entry-email">{{ entry.guestEmail }}</div>
+                    <div class="entry-reason">{{ entry.guestReason }}</div>
+                    <div class="entry-time">
+                      Preferred: {{ formatDate(entry.preferredStart) }} - {{ formatDate(entry.preferredEnd) }}
+                    </div>
+                  </div>
+                  <button class="remove-btn" (click)="removeFromWaitlist(entry.id)">Remove</button>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    }
   }
 </div>

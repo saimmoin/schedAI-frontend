@@ -16,15 +16,6 @@ export class AppointmentCard {
     return `status-${this.appointment.status}`;
   }
 
-  getTypeLabel(): string {
-    const labels: Record<string, string> = {
-      'initial': 'Initial Consultation',
-      'follow-up': 'Follow-up',
-      'emergency': 'Emergency'
-    };
-    return labels[this.appointment.type] || this.appointment.type;
-  }
-
   formatTime(date: Date): string {
     return new Date(date).toLocaleTimeString('en-US', {
       hour: 'numeric',

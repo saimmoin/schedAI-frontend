@@ -1,8 +1,36 @@
 <div class="calendar-container">
   <div class="calendar-header">
     <h1>Calendar</h1>
-    <button routerLink="/booking" class="primary-btn">New Appointment</button>
+    <div class="header-actions">
+      <button routerLink="/booking" class="primary-btn">New Appointment</button>
+      <button routerLink="/optimize" class="optimize-btn">Optimize My Week</button>
+    </div>
   </div>
+
+  <!-- Conflict Banner -->
+  @if (showConflictBanner && conflict) {
+    <div class="conflict-banner" [class]="'conflict-' + conflict.type">
+      <div class="conflict-content">
+        <span class="conflict-icon">⚠️</span>
+        <div class="conflict-message">
+          <strong>{{ conflict.type === 'double_booking' ? 'Double Booking' : conflict.type === 'back_to_back' ? 'Back-to-Back Meetings' : 'Focus Time Clash' }}</strong>
+          <p>{{ conflict.suggestion }}</p>
+        </div>
+      </div>
+      <div class="conflict-actions">
+        <button class="resolve-btn" (click)="resolveConflict()">Resolve</button>
+        <button class="dismiss-btn" (click)="dismissConflict()">Dismiss</button>
+      </div>
+    </div>
+  }
+
+  <!-- Waitlist Notification -->
+  @if (waitlistNotification) {
+    <div class="waitlist-notification">
+      <span class="notification-icon">✓</span>
+      <span>{{ waitlistNotification }}</span>
+    </div>
+  }
 
   <div class="calendar-wrapper">
     <full-calendar [options]="calendarOptions()" />

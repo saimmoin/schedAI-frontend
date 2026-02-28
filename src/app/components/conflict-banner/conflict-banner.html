@@ -1,10 +1,2 @@
-@if (conflicts.length > 0 && !dismissed) {
-  <div class="conflict-banner">
-    <div class="conflict-icon">⚠️</div>
-    <div class="conflict-content">
-      <strong>{{ conflicts.length }} scheduling conflict(s) detected</strong>
-      <p>{{ conflicts[0].message }}</p>
-    </div>
-    <button class="dismiss-btn" (click)="dismiss()">×</button>
-  </div>
-}
+<!-- Conflict banner is now handled inline in calendar component -->
+<div></div>

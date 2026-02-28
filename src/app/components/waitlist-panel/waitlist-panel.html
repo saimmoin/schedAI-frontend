@@ -10,14 +10,15 @@
   } @else {
     <div class="waitlist-items">
       @for (entry of waitlist; track entry.id) {
-        <div class="waitlist-item" [class]="getPriorityClass(entry.priority)">
+        <div class="waitlist-item">
           <div class="item-header">
-            <span class="client-name">{{ entry.clientName }}</span>
-            <span class="priority-badge">{{ entry.priority }}</span>
+            <span class="client-name">{{ entry.guestName }}</span>
+            <span class="status-badge">{{ entry.status }}</span>
           </div>
           <div class="item-details">
-            <div class="preferred-times">{{ entry.preferredTimes.join(', ') }}</div>
-            <div class="added-date">Added {{ formatDate(entry.addedDate) }}</div>
+            <div class="email">{{ entry.guestEmail }}</div>
+            <div class="reason">{{ entry.guestReason }}</div>
+            <div class="added-date">Added {{ formatDate(entry.createdAt) }}</div>
           </div>
         </div>
       }

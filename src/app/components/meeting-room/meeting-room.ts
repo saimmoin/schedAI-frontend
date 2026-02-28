@@ -13,6 +13,7 @@ export class MeetingRoom implements OnInit {
   appointment: Appointment | null = null;
   meetingStarted = false;
   duration = 0;
+  transcript = '';
   private timer: any;
 
   constructor(
@@ -34,6 +35,19 @@ export class MeetingRoom implements OnInit {
     this.meetingStarted = true;
     this.timer = setInterval(() => {
       this.duration++;
+      
+      // Mock transcript generation
+      if (this.duration % 5 === 0) {
+        const mockPhrases = [
+          'Thank you for joining today.',
+          'Let\'s discuss the agenda items.',
+          'I wanted to follow up on our previous conversation.',
+          'What are your thoughts on this approach?',
+          'That sounds like a great idea.',
+          'Let me make a note of that.'
+        ];
+        this.transcript += mockPhrases[Math.floor(Math.random() * mockPhrases.length)] + ' ';
+      }
     }, 1000);
   }
 
@@ -41,7 +55,13 @@ export class MeetingRoom implements OnInit {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    if (this.appointment) {
+    
+    // Save transcript
+    if (this.appointment && this.transcript) {
+      this.api.saveTranscript(this.appointment.id, this.transcript).subscribe(() => {
+        this.router.navigate(['/debrief', this.appointment!.id]);
+      });
+    } else if (this.appointment) {
       this.router.navigate(['/debrief', this.appointment.id]);
     }
   }

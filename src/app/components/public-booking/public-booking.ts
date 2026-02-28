@@ -48,36 +48,10 @@ export class PublicBooking implements OnInit {
 
   loadSlots(): void {
     this.loading = true;
-    // Mock: Load next 7 days of slots
-    const slots: TimeSlot[] = [];
-    const today = new Date();
-    
-    for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
-      const date = new Date(today);
-      date.setDate(date.getDate() + dayOffset);
-      
-      // Skip weekends for demo
-      if (date.getDay() === 0 || date.getDay() === 6) continue;
-      
-      // Generate slots for 9am-5pm
-      for (let hour = 9; hour < 17; hour++) {
-        const start = new Date(date);
-        start.setHours(hour, 0, 0, 0);
-        const end = new Date(start);
-        end.setMinutes(30);
-        
-        slots.push({
-          id: `slot-${dayOffset}-${hour}`,
-          hostId: '1',
-          start,
-          end,
-          available: Math.random() > 0.3 // 70% available
-        });
-      }
-    }
-    
-    this.availableSlots = slots;
-    this.loading = false;
+    this.api.getPublicSlots(this.slug).subscribe(slots => {
+      this.availableSlots = slots;
+      this.loading = false;
+    });
   }
 
   selectSlot(slot: TimeSlot): void {
@@ -91,23 +65,24 @@ export class PublicBooking implements OnInit {
 
     this.submitting = true;
 
-    // Simulate API call with random conflict chance
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const hasConflict = Math.random() < 0.2; // 20% chance of conflict
-    
-    if (hasConflict) {
-      // Slot was just taken - show alternatives
-      this.alternativeSlots = this.availableSlots
-        .filter(s => s.available && s.id !== this.selectedSlot?.id)
-        .slice(0, 3);
-      this.step = 'conflict';
-    } else {
-      // Success
-      this.step = 'success';
-    }
-    
-    this.submitting = false;
+    this.api.publicBook(this.slug, {
+      guestName: this.guestName,
+      guestEmail: this.guestEmail,
+      reason: this.reason,
+      slotId: this.selectedSlot.id,
+      startTime: this.selectedSlot.start,
+      endTime: this.selectedSlot.end
+    }).subscribe(result => {
+      if (!result.available && result.nextSlots) {
+        // Slot was just taken - show alternatives
+        this.alternativeSlots = result.nextSlots;
+        this.step = 'conflict';
+      } else if (result.success) {
+        // Success
+        this.step = 'success';
+      }
+      this.submitting = false;
+    });
   }
 
   selectAlternative(slot: TimeSlot): void {
@@ -123,10 +98,25 @@ export class PublicBooking implements OnInit {
     if (!this.guestName || !this.guestEmail || !this.preferredTimeWindow) return;
 
     this.submitting = true;
-    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    alert('You\'ve been added to the waitlist! We\'ll email you when a slot opens up.');
-    this.submitting = false;
+    // Parse preferred time window (simplified)
+    const now = new Date();
+    const preferredStart = new Date(now);
+    preferredStart.setHours(9, 0, 0, 0);
+    const preferredEnd = new Date(now);
+    preferredEnd.setHours(17, 0, 0, 0);
+    
+    this.api.addToWaitlist(this.slug, {
+      guestName: this.guestName,
+      guestEmail: this.guestEmail,
+      guestReason: this.reason,
+      preferredStart,
+      preferredEnd
+    }).subscribe(() => {
+      alert('You\'ve been added to the waitlist! We\'ll email you when a slot opens up.');
+      this.submitting = false;
+      this.step = 'success';
+    });
   }
 
   formatDate(date: Date): string {

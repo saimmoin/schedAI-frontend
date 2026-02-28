@@ -25,8 +25,8 @@ export class WaitlistPanel implements OnInit {
     });
   }
 
-  getPriorityClass(priority: string): string {
-    return `priority-${priority}`;
+  getPriorityClass(status: string): string {
+    return `status-${status}`;
   }
 
   formatDate(date: Date): string {

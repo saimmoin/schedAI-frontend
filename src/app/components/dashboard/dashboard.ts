@@ -1,29 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Api, Appointment } from '../../core/api';
-import { AppointmentCard } from '../appointment-card/appointment-card';
-import { ConflictBanner } from '../conflict-banner/conflict-banner';
-import { WaitlistPanel } from '../waitlist-panel/waitlist-panel';
+import { Api, Appointment, WeekEfficiency, WorkspaceMember, WaitlistEntry } from '../../core/api';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterLink, AppointmentCard, ConflictBanner, WaitlistPanel],
+  imports: [CommonModule, RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
-  appointments: Appointment[] = [];
   todayAppointments: Appointment[] = [];
-  upcomingAppointments: Appointment[] = [];
+  weekEfficiency: WeekEfficiency | null = null;
+  teammates: WorkspaceMember[] = [];
+  waitlistCount = 0;
   loading = true;
-
-  stats = {
-    today: 0,
-    thisWeek: 0,
-    conflicts: 0,
-    waitlist: 0
-  };
+  showWaitlist = false;
+  waitlistEntries: WaitlistEntry[] = [];
 
   constructor(private api: Api) {}
 
@@ -32,41 +25,73 @@ export class Dashboard implements OnInit {
   }
 
   loadDashboard(): void {
+    // Load today's appointments
     this.api.getAppointments().subscribe(appointments => {
-      this.appointments = appointments;
-      this.filterAppointments();
-      this.calculateStats();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      this.todayAppointments = appointments.filter(apt => {
+        const aptDate = new Date(apt.startTime);
+        aptDate.setHours(0, 0, 0, 0);
+        return aptDate.getTime() === today.getTime() && apt.status === 'scheduled';
+      }).sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+    });
+
+    // Load week efficiency
+    this.api.getWeekEfficiency().subscribe(efficiency => {
+      this.weekEfficiency = efficiency;
       this.loading = false;
     });
-  }
 
-  filterAppointments(): void {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    this.todayAppointments = this.appointments.filter(apt => {
-      const aptDate = new Date(apt.start);
-      aptDate.setHours(0, 0, 0, 0);
-      return aptDate.getTime() === today.getTime() && apt.status === 'scheduled';
+    // Load workspace teammates
+    this.api.getWorkspaceMembers('ws1').subscribe(members => {
+      this.teammates = members;
     });
 
-    this.upcomingAppointments = this.appointments
-      .filter(apt => new Date(apt.start) >= tomorrow && apt.status === 'scheduled')
-      .slice(0, 5);
+    // Load waitlist count
+    this.api.getWaitlist().subscribe(entries => {
+      this.waitlistCount = entries.length;
+      this.waitlistEntries = entries;
+    });
   }
 
-  calculateStats(): void {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const weekFromNow = new Date(today);
-    weekFromNow.setDate(weekFromNow.getDate() + 7);
+  toggleWaitlist(): void {
+    this.showWaitlist = !this.showWaitlist;
+  }
 
-    this.stats.today = this.todayAppointments.length;
-    this.stats.thisWeek = this.appointments.filter(apt => {
-      const aptDate = new Date(apt.start);
-      return aptDate >= today && aptDate < weekFromNow && apt.status === 'scheduled';
-    }).length;
+  formatTime(date: Date): string {
+    return new Date(date).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+
+  getEfficiencyColor(score: number): string {
+    if (score >= 80) return '#10b981'; // green
+    if (score >= 60) return '#f59e0b'; // yellow
+    return '#ef4444'; // red
+  }
+
+  getFreeBusyColor(status?: string): string {
+    return status === 'free' ? '#10b981' : '#9ca3af';
+  }
+
+  removeFromWaitlist(id: string): void {
+    this.api.removeFromWaitlist(id).subscribe(success => {
+      if (success) {
+        this.waitlistEntries = this.waitlistEntries.filter(w => w.id !== id);
+        this.waitlistCount--;
+      }
+    });
+  }
+
+  formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
+    });
   }
 }

@@ -3,21 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Api, TimeSlot } from '../../core/api';
-import { SlotGrid } from '../slot-grid/slot-grid';
 
 @Component({
   selector: 'app-booking',
-  imports: [CommonModule, FormsModule, SlotGrid, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './booking.html',
   styleUrl: './booking.css',
 })
 export class Booking implements OnInit {
-  step = 1;
-  
   // Form data
   clientName = '';
   clientEmail = '';
-  appointmentType: 'initial' | 'follow-up' | 'emergency' = 'initial';
   selectedDate: Date | null = null;
   selectedSlot: TimeSlot | null = null;
   notes = '';
@@ -35,30 +31,20 @@ export class Booking implements OnInit {
   ngOnInit(): void {
     // Check for pre-selected date from query params
     this.route.queryParams.subscribe(params => {
-      if (params['date']) {
-        this.selectedDate = new Date(params['date']);
-        this.step = 2;
+      if (params['start']) {
+        this.selectedDate = new Date(params['start']);
+        this.loadSlots();
+      } else {
+        // Default to today
+        this.selectedDate = new Date();
         this.loadSlots();
       }
     });
   }
 
-  nextStep(): void {
-    if (this.step === 1 && this.clientName && this.clientEmail) {
-      this.step = 2;
-    } else if (this.step === 2 && this.selectedSlot) {
-      this.step = 3;
-    }
-  }
-
-  prevStep(): void {
-    if (this.step > 1) {
-      this.step--;
-    }
-  }
-
   onDateChange(event: any): void {
     this.selectedDate = new Date(event.target.value);
+    this.selectedSlot = null; // Reset selected slot
     this.loadSlots();
   }
 
@@ -66,38 +52,42 @@ export class Booking implements OnInit {
     if (!this.selectedDate) return;
     
     this.loading = true;
-    this.api.getAvailableSlots(this.selectedDate).subscribe(slots => {
+    this.api.getAvailableSlots('1', this.selectedDate).subscribe(slots => {
       this.availableSlots = slots;
       this.loading = false;
     });
   }
 
   selectSlot(slot: TimeSlot): void {
-    this.selectedSlot = slot;
+    if (slot.available) {
+      this.selectedSlot = slot;
+    }
   }
 
   async submitBooking(): Promise<void> {
-    if (!this.selectedSlot) return;
+    if (!this.selectedSlot || !this.clientName || !this.clientEmail) return;
 
     this.submitting = true;
 
     try {
-      await this.api.createAppointment({
-        clientName: this.clientName,
-        clientEmail: this.clientEmail,
-        hostId: '1',
-        hostName: 'Dr. Sarah Johnson',
-        start: this.selectedSlot.start,
-        end: this.selectedSlot.end,
-        status: 'scheduled',
-        type: this.appointmentType,
-        notes: this.notes,
-        roomUrl: `/meeting/${Date.now()}`
+      const endTime = new Date(this.selectedSlot.start);
+      endTime.setMinutes(endTime.getMinutes() + 30);
+
+      const result = await this.api.createAppointment({
+        guestName: this.clientName,
+        guestEmail: this.clientEmail,
+        title: this.notes || 'Meeting',
+        reason: 'Scheduled meeting',
+        startTime: this.selectedSlot.start,
+        endTime: endTime,
+        workspaceId: 'ws1',
+        hostUserId: '1'
       }).toPromise();
 
-      this.router.navigate(['/dashboard']);
+      // Navigate to calendar to see the new appointment
+      this.router.navigate(['/calendar']);
     } catch (error) {
-      alert('Failed to book appointment');
+      alert('Failed to create appointment');
     } finally {
       this.submitting = false;
     }

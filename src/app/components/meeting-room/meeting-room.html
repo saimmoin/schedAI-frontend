@@ -3,36 +3,49 @@
     @if (!meetingStarted) {
       <div class="pre-meeting">
         <div class="meeting-info">
-          <h1>Ready to start your session?</h1>
-          <div class="client-info">
-            <h2>{{ appointment.clientName }}</h2>
-            <p>{{ appointment.type }} appointment</p>
+          <h1>Ready to start your meeting?</h1>
+          <div class="guest-info">
+            <h2>{{ appointment.guestName }}</h2>
+            <p>{{ appointment.title }}</p>
+            <p class="reason">{{ appointment.reason }}</p>
           </div>
-          <button class="start-btn" (click)="startMeeting()">Start Session</button>
+          <button class="start-btn" (click)="startMeeting()">Start Recording</button>
         </div>
       </div>
     } @else {
       <div class="meeting-active">
         <div class="meeting-header">
           <div class="meeting-title">
-            <h2>{{ appointment.clientName }}</h2>
+            <h2>{{ appointment.guestName }} - {{ appointment.title }}</h2>
             <span class="duration">{{ formatDuration() }}</span>
           </div>
-          <button class="end-btn" (click)="endMeeting()">End Session</button>
+          <button class="end-btn" (click)="endMeeting()">Stop Recording</button>
         </div>
 
         <div class="video-grid">
           <div class="video-placeholder host">
             <div class="placeholder-content">
-              <div class="avatar">👨‍⚕️</div>
-              <p>You</p>
+              <div class="avatar">{{ appointment.hostName?.charAt(0) || 'H' }}</div>
+              <p>{{ appointment.hostName || 'Host' }}</p>
             </div>
           </div>
-          <div class="video-placeholder client">
+          <div class="video-placeholder guest">
             <div class="placeholder-content">
-              <div class="avatar">👤</div>
-              <p>{{ appointment.clientName }}</p>
+              <div class="avatar">{{ appointment.guestName.charAt(0) }}</div>
+              <p>{{ appointment.guestName }}</p>
             </div>
+          </div>
+        </div>
+
+        <!-- Live Transcript -->
+        <div class="transcript-section">
+          <h3>Live Transcript</h3>
+          <div class="transcript-content">
+            @if (transcript) {
+              <p>{{ transcript }}</p>
+            } @else {
+              <p class="placeholder">Transcript will appear here as you speak...</p>
+            }
           </div>
         </div>
 

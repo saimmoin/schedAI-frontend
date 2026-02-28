@@ -15,56 +15,6 @@
 
     @if (step === 2) {
       <div class="onboarding-content">
-        <div class="icon">🏢</div>
-        <h2>Create or Join Workspace</h2>
-        
-        <div class="workspace-mode-selector">
-          <button
-            class="mode-btn"
-            [class.active]="workspaceMode === 'create'"
-            (click)="workspaceMode = 'create'"
-          >
-            Create New
-          </button>
-          <button
-            class="mode-btn"
-            [class.active]="workspaceMode === 'join'"
-            (click)="workspaceMode = 'join'"
-          >
-            Join Existing
-          </button>
-        </div>
-
-        @if (workspaceMode === 'create') {
-          <div class="workspace-form">
-            <label for="workspace-name">Workspace Name</label>
-            <input
-              type="text"
-              id="workspace-name"
-              name="workspaceName"
-              [(ngModel)]="workspaceName"
-              placeholder="My Practice"
-              autofocus
-            />
-          </div>
-        } @else {
-          <div class="workspace-form">
-            <label for="invite-code">Invite Code</label>
-            <input
-              type="text"
-              id="invite-code"
-              name="inviteCode"
-              [(ngModel)]="inviteCode"
-              placeholder="Enter 6-digit code"
-              autofocus
-            />
-          </div>
-        }
-      </div>
-    }
-
-    @if (step === 3) {
-      <div class="onboarding-content">
         <div class="icon">📅</div>
         <h2>Connect Your Calendar</h2>
         <p>Sync with Google Calendar to import your existing appointments</p>
@@ -86,15 +36,11 @@
     <div class="onboarding-actions">
       <button class="skip-btn" (click)="skip()">Skip</button>
       <div class="nav-buttons">
-        @if (step > 1 && step < 3) {
+        @if (step > 1) {
           <button class="secondary-btn" (click)="prevStep()">Back</button>
         }
-        @if (step < 3) {
-          <button
-            class="primary-btn"
-            (click)="nextStep()"
-            [disabled]="step === 2 && !canProceedStep2()"
-          >
+        @if (step < 2) {
+          <button class="primary-btn" (click)="nextStep()">
             Next
           </button>
         }
@@ -102,7 +48,7 @@
     </div>
 
     <div class="step-indicators">
-      @for (i of [1, 2, 3]; track i) {
+      @for (i of [1, 2]; track i) {
         <div class="indicator" [class.active]="i === step"></div>
       }
     </div>

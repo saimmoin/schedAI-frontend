@@ -1,23 +1,23 @@
 <div class="appointment-card" [class]="getStatusClass()">
   <div class="appointment-time">
-    <div class="time">{{ formatTime(appointment.start) }}</div>
-    <div class="date">{{ formatDate(appointment.start) }}</div>
+    <div class="time">{{ formatTime(appointment.startTime) }}</div>
+    <div class="date">{{ formatDate(appointment.startTime) }}</div>
   </div>
   
   <div class="appointment-details">
-    <div class="client-name">{{ appointment.clientName }}</div>
+    <div class="guest-name">{{ appointment.guestName }}</div>
+    <div class="appointment-title">{{ appointment.title }}</div>
     <div class="appointment-meta">
-      <span class="type-badge">{{ getTypeLabel() }}</span>
       <span class="status-badge">{{ appointment.status }}</span>
     </div>
   </div>
 
   <div class="appointment-actions">
-    @if (appointment.roomUrl && appointment.status === 'scheduled') {
-      <button [routerLink]="appointment.roomUrl" class="action-btn primary">Join</button>
+    @if (appointment.status === 'scheduled') {
+      <button [routerLink]="['/meeting', appointment.id]" class="action-btn primary">Join</button>
     }
     @if (appointment.status === 'completed') {
-      <button [routerLink]="['/debrief', appointment.id]" class="action-btn">Notes</button>
+      <button [routerLink]="['/debrief', appointment.id]" class="action-btn">Debrief</button>
     }
   </div>
 </div>

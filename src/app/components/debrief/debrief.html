@@ -1,57 +1,76 @@
 <div class="debrief-container">
   @if (appointment) {
     <div class="debrief-header">
-      <h1>Session Notes</h1>
-      <div class="session-info">
-        <span>{{ appointment.clientName }}</span>
-        <span class="separator">•</span>
-        <span>{{ appointment.start | date:'short' }}</span>
-      </div>
+      <h1>Meeting Debrief</h1>
+      <p class="meeting-info">{{ appointment.guestName }} - {{ appointment.title }}</p>
     </div>
 
-    <div class="debrief-card">
-      <div class="section">
-        <h3>Session Rating</h3>
-        <div class="rating-stars">
-          @for (star of [1, 2, 3, 4, 5]; track star) {
-            <button
-              class="star-btn"
-              [class.active]="star <= sessionRating"
-              (click)="setRating(star)"
-            >
-              {{ star <= sessionRating ? '⭐' : '☆' }}
-            </button>
-          }
+    <!-- Transcript Section -->
+    @if (hasTranscript) {
+      <div class="transcript-section">
+        <h2>Transcript</h2>
+        <div class="transcript-box">
+          {{ appointment.transcript }}
         </div>
       </div>
+    }
 
-      <div class="section">
-        <h3>Session Notes</h3>
-        <textarea
-          [(ngModel)]="notes"
-          placeholder="Document key points, observations, and progress from this session..."
-          rows="12"
-        ></textarea>
-      </div>
-
-      <div class="section">
-        <label class="checkbox-label">
-          <input
-            type="checkbox"
-            [(ngModel)]="followUpNeeded"
-          />
-          <span>Follow-up appointment needed</span>
-        </label>
-      </div>
-
-      <div class="action-buttons">
-        <button class="secondary-btn" (click)="cancel()">Cancel</button>
-        <button class="primary-btn" (click)="saveNotes()" [disabled]="saving">
-          {{ saving ? 'Saving...' : 'Save Notes' }}
+    <!-- AI Debrief Section -->
+    @if (!debrief) {
+      <div class="generate-section">
+        <button class="generate-btn" (click)="generateDebrief()" [disabled]="generating || !hasTranscript">
+          @if (generating) {
+            <span class="spinner"></span>
+            Generating AI Debrief...
+          } @else {
+            Generate AI Debrief
+          }
         </button>
+        @if (!hasTranscript) {
+          <p class="info-text">No transcript available for this meeting</p>
+        }
       </div>
+    } @else {
+      <div class="debrief-results">
+        <!-- Summary -->
+        <div class="debrief-card">
+          <h2>Meeting Summary</h2>
+          <p>{{ debrief.summary }}</p>
+        </div>
+
+        <!-- Action Items -->
+        <div class="debrief-card">
+          <h2>Action Items</h2>
+          <ul class="action-items">
+            @for (item of debrief.actionItems; track $index) {
+              <li>
+                <span class="checkbox">☐</span>
+                <span>{{ item }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Follow-up -->
+        @if (debrief.suggestedFollowupDate) {
+          <div class="debrief-card followup">
+            <h2>Suggested Follow-Up</h2>
+            <p class="followup-date">{{ formatDate(debrief.suggestedFollowupDate) }}</p>
+            <button class="book-followup-btn" (click)="bookFollowUp()">
+              Book Follow-Up Meeting
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="secondary-btn" (click)="backToDashboard()">
+        Back to Dashboard
+      </button>
     </div>
   } @else {
-    <div class="loading">Loading appointment...</div>
+    <div class="loading">Loading...</div>
   }
 </div>
