@@ -76,25 +76,57 @@
 }
 
 .duration {
-  color: #10b981;
-  font-size: 14px;
-  font-weight: 500;
+  color: #ef4444;
+  font-size: 1.2rem;
+  font-weight: 600;
   margin-left: 16px;
 }
 
-.end-btn {
-  padding: 12px 24px;
-  background: #ef4444;
-  color: white;
-  border: none;
+.save-confirmation {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 1.5rem;
   border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
+  margin: 1rem 2rem;
+  text-align: center;
 }
 
-.end-btn:hover {
-  background: #dc2626;
+.save-confirmation p {
+  color: #166534;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.debrief-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.debrief-btn:hover {
+  background-color: #2563eb;
+}
+
+.transcript-section {
+  padding: 20px 32px;
+  background: rgba(0, 0, 0, 0.2);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.transcript-content {
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.transcript-content .placeholder {
+  font-style: italic;
+  opacity: 0.6;
 }
 
 .video-grid {
