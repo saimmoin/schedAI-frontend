@@ -1,1 +1,20 @@
-<p>slot-grid works!</p>
+<div class="slot-grid">
+  @for (slot of slots; track slot.id) {
+    <button
+      class="slot-btn"
+      [class.available]="slot.available"
+      [class.unavailable]="!slot.available"
+      [class.selected]="isSelected(slot)"
+      [disabled]="!slot.available"
+      (click)="selectSlot(slot)"
+    >
+      {{ formatTime(slot.start) }}
+    </button>
+  }
+</div>
+
+@if (slots.length === 0) {
+  <div class="empty-state">
+    <p>No slots available for this date</p>
+  </div>
+}

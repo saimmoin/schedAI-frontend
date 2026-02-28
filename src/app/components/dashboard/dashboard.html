@@ -1,1 +1,86 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <div class="header-actions">
+      <button routerLink="/booking" class="primary-btn">New Appointment</button>
+    </div>
+  </div>
+
+  <app-conflict-banner />
+
+  @if (loading) {
+    <div class="loading">Loading...</div>
+  } @else {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats.today }}</div>
+          <div class="stat-label">Today's Appointments</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats.thisWeek }}</div>
+          <div class="stat-label">This Week</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats.conflicts }}</div>
+          <div class="stat-label">Conflicts</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats.waitlist }}</div>
+          <div class="stat-label">Waitlist</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-content">
+      <div class="main-section">
+        <section class="appointments-section">
+          <h2>Today's Appointments</h2>
+          @if (todayAppointments.length === 0) {
+            <div class="empty-state">
+              <p>No appointments scheduled for today</p>
+            </div>
+          } @else {
+            <div class="appointments-list">
+              @for (appointment of todayAppointments; track appointment.id) {
+                <app-appointment-card [appointment]="appointment" />
+              }
+            </div>
+          }
+        </section>
+
+        <section class="appointments-section">
+          <h2>Upcoming Appointments</h2>
+          @if (upcomingAppointments.length === 0) {
+            <div class="empty-state">
+              <p>No upcoming appointments</p>
+            </div>
+          } @else {
+            <div class="appointments-list">
+              @for (appointment of upcomingAppointments; track appointment.id) {
+                <app-appointment-card [appointment]="appointment" />
+              }
+            </div>
+          }
+        </section>
+      </div>
+
+      <aside class="sidebar-section">
+        <app-waitlist-panel />
+      </aside>
+    </div>
+  }
+</div>

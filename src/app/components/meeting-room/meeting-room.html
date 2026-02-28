@@ -1,1 +1,50 @@
-<p>meeting-room works!</p>
+<div class="meeting-container">
+  @if (appointment) {
+    @if (!meetingStarted) {
+      <div class="pre-meeting">
+        <div class="meeting-info">
+          <h1>Ready to start your session?</h1>
+          <div class="client-info">
+            <h2>{{ appointment.clientName }}</h2>
+            <p>{{ appointment.type }} appointment</p>
+          </div>
+          <button class="start-btn" (click)="startMeeting()">Start Session</button>
+        </div>
+      </div>
+    } @else {
+      <div class="meeting-active">
+        <div class="meeting-header">
+          <div class="meeting-title">
+            <h2>{{ appointment.clientName }}</h2>
+            <span class="duration">{{ formatDuration() }}</span>
+          </div>
+          <button class="end-btn" (click)="endMeeting()">End Session</button>
+        </div>
+
+        <div class="video-grid">
+          <div class="video-placeholder therapist">
+            <div class="placeholder-content">
+              <div class="avatar">👨‍⚕️</div>
+              <p>You</p>
+            </div>
+          </div>
+          <div class="video-placeholder client">
+            <div class="placeholder-content">
+              <div class="avatar">👤</div>
+              <p>{{ appointment.clientName }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="meeting-controls">
+          <button class="control-btn">🎤 Mute</button>
+          <button class="control-btn">📹 Video</button>
+          <button class="control-btn">💬 Chat</button>
+          <button class="control-btn">📝 Notes</button>
+        </div>
+      </div>
+    }
+  } @else {
+    <div class="loading">Loading meeting...</div>
+  }
+</div>

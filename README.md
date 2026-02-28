@@ -1,59 +1,195 @@
-# CodePulse
+# TherapySync - Therapy Appointment Management System
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.7.
+A modern Angular-based application for managing therapy appointments with AI-powered scheduling optimization.
 
-## Development server
+## Features
 
-To start a local development server, run:
+### 🔐 Authentication
+- Secure login system with JWT token management
+- Auth guard protection for routes
+- Mock authentication (accepts any credentials for demo)
 
-```bash
-ng serve
+### 📊 Dashboard
+- Today's appointments overview
+- Upcoming appointments list
+- Statistics cards (today, this week, conflicts, waitlist)
+- Conflict detection banner
+- Waitlist panel
+
+### 📅 Calendar
+- Full calendar view with FullCalendar integration
+- Day, week, and month views
+- Interactive appointment management
+- Color-coded appointment statuses
+- Click to view/edit appointments
+
+### 📝 Booking System
+- 3-step booking wizard
+- Client information collection
+- Date and time slot selection
+- Visual slot availability grid
+- Booking confirmation
+
+### 🎥 Meeting Room
+- Virtual meeting interface
+- Session timer
+- Mock video grid
+- Meeting controls (mute, video, chat, notes)
+- End session with automatic debrief redirect
+
+### 📋 Session Debrief
+- Post-session notes
+- Session rating system
+- Follow-up tracking
+- Save notes to appointment
+
+### 🤖 Schedule Optimization
+- AI-powered schedule analysis
+- Efficiency metrics dashboard
+- Optimization suggestions
+- One-click schedule improvements
+
+### ⚙️ Settings
+- Profile management
+- Working hours configuration
+- Working days selection
+- Notification preferences
+- Timezone settings
+
+### 🎯 Onboarding
+- 3-step welcome flow
+- Feature introduction
+- Skip option available
+
+## Tech Stack
+
+- **Framework**: Angular 20.3.0
+- **Calendar**: FullCalendar 6.1.11
+- **Styling**: Custom CSS with modern design
+- **State Management**: Angular Signals
+- **Routing**: Angular Router with lazy loading
+- **HTTP**: Angular HttpClient with JWT interceptor
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── components/
+│   │   ├── auth/              # Login screen
+│   │   ├── dashboard/         # Main dashboard
+│   │   ├── calendar/          # Calendar view
+│   │   ├── booking/           # Appointment booking
+│   │   ├── meeting-room/      # Virtual meeting
+│   │   ├── debrief/           # Session notes
+│   │   ├── optimize/          # Schedule optimization
+│   │   ├── settings/          # User settings
+│   │   ├── onboarding/        # Welcome flow
+│   │   ├── appointment-card/  # Reusable appointment card
+│   │   ├── conflict-banner/   # Conflict alerts
+│   │   ├── waitlist-panel/    # Waitlist display
+│   │   ├── slot-grid/         # Time slot selector
+│   │   └── team-strip/        # Team member list
+│   ├── core/
+│   │   ├── api.ts             # API service with mock data
+│   │   ├── auth.ts            # Authentication service
+│   │   ├── auth-guard.ts      # Route guard
+│   │   └── jwt-interceptor.ts # HTTP interceptor
+│   ├── app.config.ts          # App configuration
+│   └── app.routes.ts          # Route definitions
+└── styles.css                 # Global styles
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Getting Started
 
-## Code scaffolding
+### Prerequisites
+- Node.js (v18 or higher)
+- npm
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Installation
 
+1. Install dependencies:
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+2. Start the development server:
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+3. Open your browser to `http://localhost:4200`
 
-To build the project run:
+### Demo Credentials
+- Email: any email
+- Password: any password
 
-```bash
-ng build
-```
+## Available Scripts
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- `npm start` - Start development server
+- `npm run build` - Build for production
+- `npm test` - Run unit tests
+- `npm run watch` - Build in watch mode
 
-## Running unit tests
+## Features in Detail
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Mock Data
+The application uses mock data for demonstration purposes. All API calls are simulated with RxJS observables and delays to mimic real API behavior.
 
-```bash
-ng test
-```
+### Authentication Flow
+1. User logs in with any credentials
+2. JWT token is stored in localStorage
+3. Auth guard protects all routes except /auth
+4. Token is automatically added to HTTP requests via interceptor
 
-## Running end-to-end tests
+### Appointment Management
+- Create new appointments with client details
+- View appointments in calendar or list view
+- Join virtual meetings
+- Complete sessions and add notes
+- Track appointment status (scheduled, completed, cancelled, no-show)
 
-For end-to-end (e2e) testing, run:
+### Schedule Optimization
+- Analyzes current schedule
+- Identifies gaps and inefficiencies
+- Suggests improvements
+- Calculates time savings
 
-```bash
-ng e2e
-```
+## Design System
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Colors
+- Primary: Blue (#3b82f6)
+- Success: Green (#10b981)
+- Warning: Yellow (#f59e0b)
+- Error: Red (#ef4444)
+- Background: Light Gray (#f8fafc)
 
-## Additional Resources
+### Typography
+- System fonts for optimal performance
+- Clear hierarchy with size and weight
+- Accessible contrast ratios
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Components
+- Consistent border radius (8-12px)
+- Subtle shadows for depth
+- Smooth transitions and hover states
+- Responsive design
+
+## Future Enhancements
+
+- Real backend API integration
+- Video conferencing integration (Zoom, Teams, etc.)
+- Email/SMS notifications
+- Advanced analytics and reporting
+- Multi-therapist support
+- Client portal
+- Payment processing
+- Insurance integration
+
+## License
+
+MIT
+
+## Author
+
+Built with Angular and ❤️

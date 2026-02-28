@@ -1,1 +1,10 @@
-<p>calendar works!</p>
+<div class="calendar-container">
+  <div class="calendar-header">
+    <h1>Calendar</h1>
+    <button routerLink="/booking" class="primary-btn">New Appointment</button>
+  </div>
+
+  <div class="calendar-wrapper">
+    <full-calendar [options]="calendarOptions()" />
+  </div>
+</div>

@@ -1,1 +1,57 @@
-<p>debrief works!</p>
+<div class="debrief-container">
+  @if (appointment) {
+    <div class="debrief-header">
+      <h1>Session Notes</h1>
+      <div class="session-info">
+        <span>{{ appointment.clientName }}</span>
+        <span class="separator">•</span>
+        <span>{{ appointment.start | date:'short' }}</span>
+      </div>
+    </div>
+
+    <div class="debrief-card">
+      <div class="section">
+        <h3>Session Rating</h3>
+        <div class="rating-stars">
+          @for (star of [1, 2, 3, 4, 5]; track star) {
+            <button
+              class="star-btn"
+              [class.active]="star <= sessionRating"
+              (click)="setRating(star)"
+            >
+              {{ star <= sessionRating ? '⭐' : '☆' }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Session Notes</h3>
+        <textarea
+          [(ngModel)]="notes"
+          placeholder="Document key points, observations, and progress from this session..."
+          rows="12"
+        ></textarea>
+      </div>
+
+      <div class="section">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            [(ngModel)]="followUpNeeded"
+          />
+          <span>Follow-up appointment needed</span>
+        </label>
+      </div>
+
+      <div class="action-buttons">
+        <button class="secondary-btn" (click)="cancel()">Cancel</button>
+        <button class="primary-btn" (click)="saveNotes()" [disabled]="saving">
+          {{ saving ? 'Saving...' : 'Save Notes' }}
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="loading">Loading appointment...</div>
+  }
+</div>

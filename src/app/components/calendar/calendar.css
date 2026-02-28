@@ -1,0 +1,71 @@
+.calendar-container {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.calendar-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #1e293b;
+}
+
+.primary-btn {
+  padding: 12px 24px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.primary-btn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.calendar-wrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+:host ::ng-deep .fc {
+  font-family: inherit;
+}
+
+:host ::ng-deep .fc-button {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  text-transform: capitalize;
+}
+
+:host ::ng-deep .fc-button:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+:host ::ng-deep .fc-button-active {
+  background: #1e40af !important;
+  border-color: #1e40af !important;
+}
+
+:host ::ng-deep .fc-event {
+  cursor: pointer;
+}
+
+:host ::ng-deep .fc-daygrid-event {
+  padding: 2px 4px;
+}

@@ -1,1 +1,23 @@
-<p>appointment-card works!</p>
+<div class="appointment-card" [class]="getStatusClass()">
+  <div class="appointment-time">
+    <div class="time">{{ formatTime(appointment.start) }}</div>
+    <div class="date">{{ formatDate(appointment.start) }}</div>
+  </div>
+  
+  <div class="appointment-details">
+    <div class="client-name">{{ appointment.clientName }}</div>
+    <div class="appointment-meta">
+      <span class="type-badge">{{ getTypeLabel() }}</span>
+      <span class="status-badge">{{ appointment.status }}</span>
+    </div>
+  </div>
+
+  <div class="appointment-actions">
+    @if (appointment.roomUrl && appointment.status === 'scheduled') {
+      <button [routerLink]="appointment.roomUrl" class="action-btn primary">Join</button>
+    }
+    @if (appointment.status === 'completed') {
+      <button [routerLink]="['/debrief', appointment.id]" class="action-btn">Notes</button>
+    }
+  </div>
+</div>

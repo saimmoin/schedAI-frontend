@@ -1,1 +1,20 @@
-<p>team-strip works!</p>
+<div class="team-strip">
+  <h3>Team Members</h3>
+  <div class="team-list">
+    @for (member of teamMembers; track member.id) {
+      <button
+        class="team-member"
+        [class.selected]="selectedMember?.id === member.id"
+        [class.unavailable]="!member.available"
+        (click)="selectMember(member)"
+      >
+        <div class="avatar">{{ member.avatar }}</div>
+        <div class="member-info">
+          <div class="member-name">{{ member.name }}</div>
+          <div class="member-role">{{ member.role }}</div>
+        </div>
+        <div class="status-indicator" [class.available]="member.available"></div>
+      </button>
+    }
+  </div>
+</div>

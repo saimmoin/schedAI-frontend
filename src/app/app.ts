@@ -1,12 +1,22 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Auth } from './core/auth';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink, CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('code-pulse');
+  constructor(public auth: Auth, private router: Router) {}
+
+  logout(): void {
+    this.auth.logout();
+  }
+
+  isAuthPage(): boolean {
+    return this.router.url === '/auth' || this.router.url === '/onboarding';
+  }
 }

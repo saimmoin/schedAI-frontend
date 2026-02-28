@@ -1,1 +1,26 @@
-<p>waitlist-panel works!</p>
+<div class="waitlist-panel">
+  <h3>Waitlist</h3>
+  
+  @if (loading) {
+    <div class="loading">Loading...</div>
+  } @else if (waitlist.length === 0) {
+    <div class="empty-state">
+      <p>No one on waitlist</p>
+    </div>
+  } @else {
+    <div class="waitlist-items">
+      @for (entry of waitlist; track entry.id) {
+        <div class="waitlist-item" [class]="getPriorityClass(entry.priority)">
+          <div class="item-header">
+            <span class="client-name">{{ entry.clientName }}</span>
+            <span class="priority-badge">{{ entry.priority }}</span>
+          </div>
+          <div class="item-details">
+            <div class="preferred-times">{{ entry.preferredTimes.join(', ') }}</div>
+            <div class="added-date">Added {{ formatDate(entry.addedDate) }}</div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
