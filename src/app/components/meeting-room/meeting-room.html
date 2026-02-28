@@ -2,14 +2,14 @@
   @if (appointment) {
     @if (!meetingStarted) {
       <div class="pre-meeting">
-        <div class="meeting-info">
+        <div class="meeting-info animate-in">
           <h1>Ready to start your meeting?</h1>
           <div class="guest-info">
             <h2>{{ appointment.guestName }}</h2>
             <p>{{ appointment.title }}</p>
             <p class="reason">{{ appointment.reason }}</p>
           </div>
-          <button class="start-btn" (click)="startMeeting()">Start Recording</button>
+          <button class="start-btn pulse-button" (click)="startMeeting()">Start Recording</button>
         </div>
       </div>
     } @else {
