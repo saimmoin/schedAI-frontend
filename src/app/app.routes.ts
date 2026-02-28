@@ -27,9 +27,14 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: 'booking',
-    loadComponent: () => import('./components/booking/booking').then(m => m.Booking),
+    path: 'availability',
+    loadComponent: () => import('./components/availability/availability').then(m => m.Availability),
     canActivate: [authGuard]
+  },
+  {
+    path: 'book/:slug',
+    loadComponent: () => import('./components/public-booking/public-booking').then(m => m.PublicBooking)
+    // NO AUTH GUARD - Public route
   },
   {
     path: 'meeting/:id',

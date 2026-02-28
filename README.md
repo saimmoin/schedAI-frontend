@@ -1,6 +1,6 @@
-# TherapySync - Therapy Appointment Management System
+# SchedAI - AI-Powered Scheduling Assistant
 
-A modern Angular-based application for managing therapy appointments with AI-powered scheduling optimization.
+A modern Angular-based application for intelligent appointment scheduling with AI-powered optimization.
 
 ## Features
 

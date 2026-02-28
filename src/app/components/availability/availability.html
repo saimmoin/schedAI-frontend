@@ -1,0 +1,89 @@
+<div class="availability-container">
+  <div class="availability-header">
+    <h1>Availability Settings</h1>
+    <p>Set your working hours and booking preferences</p>
+  </div>
+
+  <div class="availability-card">
+    <section class="section">
+      <h2>Your Booking Link</h2>
+      <div class="booking-link-section">
+        <div class="slug-input-group">
+          <span class="slug-prefix">schedai.app/</span>
+          <input
+            type="text"
+            [(ngModel)]="bookingSlug"
+            (ngModelChange)="onSlugChange()"
+            placeholder="yourname"
+            class="slug-input"
+          />
+        </div>
+        <div class="link-display">
+          <input
+            type="text"
+            [value]="bookingLink"
+            readonly
+            class="link-input"
+          />
+          <button class="copy-btn" (click)="copyLink()">
+            {{ copied ? '✓ Copied!' : 'Copy Link' }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Working Hours</h2>
+      <p class="section-description">Set your available hours for each day of the week</p>
+      
+      <div class="days-list">
+        @for (day of days; track day.day) {
+          <div class="day-row" [class.disabled]="!day.enabled">
+            <label class="day-toggle">
+              <input
+                type="checkbox"
+                [(ngModel)]="day.enabled"
+              />
+              <span class="day-name">{{ day.day }}</span>
+            </label>
+
+            @if (day.enabled) {
+              <div class="time-inputs">
+                <input
+                  type="time"
+                  [(ngModel)]="day.startTime"
+                  class="time-input"
+                />
+                <span class="time-separator">to</span>
+                <input
+                  type="time"
+                  [(ngModel)]="day.endTime"
+                  class="time-input"
+                />
+              </div>
+            } @else {
+              <span class="unavailable-text">Unavailable</span>
+            }
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Buffer Time</h2>
+      <p class="section-description">Add buffer time between meetings to avoid back-to-back bookings</p>
+      
+      <select [(ngModel)]="bufferMinutes" class="buffer-select">
+        @for (option of bufferOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </section>
+
+    <div class="actions">
+      <button class="save-btn" (click)="saveAvailability()" [disabled]="saving">
+        {{ saving ? 'Saving...' : 'Save Availability' }}
+      </button>
+    </div>
+  </div>
+</div>

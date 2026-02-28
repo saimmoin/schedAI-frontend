@@ -85,8 +85,8 @@ export class Booking implements OnInit {
       await this.api.createAppointment({
         clientName: this.clientName,
         clientEmail: this.clientEmail,
-        therapistId: '1',
-        therapistName: 'Dr. Sarah Johnson',
+        hostId: '1',
+        hostName: 'Dr. Sarah Johnson',
         start: this.selectedSlot.start,
         end: this.selectedSlot.end,
         status: 'scheduled',

@@ -20,21 +20,21 @@ export class TeamStrip {
     {
       id: '1',
       name: 'Dr. Sarah Johnson',
-      role: 'Therapist',
+      role: 'Host',
       avatar: '👩‍⚕️',
       available: true
     },
     {
       id: '2',
       name: 'Dr. Michael Chen',
-      role: 'Therapist',
+      role: 'Host',
       avatar: '👨‍⚕️',
       available: true
     },
     {
       id: '3',
       name: 'Dr. Emily Rodriguez',
-      role: 'Therapist',
+      role: 'Host',
       avatar: '👩‍⚕️',
       available: false
     }

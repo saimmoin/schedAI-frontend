@@ -5,8 +5,8 @@ export interface Appointment {
   id: string;
   clientName: string;
   clientEmail: string;
-  therapistId: string;
-  therapistName: string;
+  hostId: string;
+  hostName: string;
   start: Date;
   end: Date;
   status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
@@ -17,7 +17,7 @@ export interface Appointment {
 
 export interface TimeSlot {
   id: string;
-  therapistId: string;
+  hostId: string;
   start: Date;
   end: Date;
   available: boolean;
@@ -49,8 +49,8 @@ export class Api {
       id: '1',
       clientName: 'John Doe',
       clientEmail: 'john@example.com',
-      therapistId: '1',
-      therapistName: 'Dr. Sarah Johnson',
+      hostId: '1',
+      hostName: 'Dr. Sarah Johnson',
       start: new Date(2026, 2, 3, 10, 0),
       end: new Date(2026, 2, 3, 11, 0),
       status: 'scheduled',
@@ -61,8 +61,8 @@ export class Api {
       id: '2',
       clientName: 'Jane Smith',
       clientEmail: 'jane@example.com',
-      therapistId: '1',
-      therapistName: 'Dr. Sarah Johnson',
+      hostId: '1',
+      hostName: 'Dr. Sarah Johnson',
       start: new Date(2026, 2, 3, 14, 0),
       end: new Date(2026, 2, 3, 15, 0),
       status: 'scheduled',
@@ -72,8 +72,8 @@ export class Api {
       id: '3',
       clientName: 'Bob Wilson',
       clientEmail: 'bob@example.com',
-      therapistId: '1',
-      therapistName: 'Dr. Sarah Johnson',
+      hostId: '1',
+      hostName: 'Dr. Sarah Johnson',
       start: new Date(2026, 2, 4, 9, 0),
       end: new Date(2026, 2, 4, 10, 0),
       status: 'completed',
@@ -141,7 +141,7 @@ export class Api {
     for (let hour = 9; hour < 17; hour++) {
       slots.push({
         id: `slot-${hour}`,
-        therapistId: '1',
+        hostId: '1',
         start: new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate(), hour, 0),
         end: new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate(), hour + 1, 0),
         available: Math.random() > 0.3

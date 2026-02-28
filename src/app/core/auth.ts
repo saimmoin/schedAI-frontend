@@ -5,7 +5,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'therapist' | 'admin';
+  role: 'host' | 'admin';
   timezone: string;
 }
 
@@ -34,7 +34,7 @@ export class Auth {
           id: '1',
           email: email,
           name: 'Dr. Sarah Johnson',
-          role: 'therapist',
+          role: 'host',
           timezone: 'America/New_York'
         };
         const mockToken = 'mock-jwt-token-' + Date.now();
