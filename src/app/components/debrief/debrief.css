@@ -1,35 +1,52 @@
+/* ===== DEBRIEF CONTAINER ===== */
 .debrief-container {
   padding: 32px;
   max-width: 900px;
   margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ===== HEADER ===== */
 .debrief-header {
   margin-bottom: 32px;
 }
 
 .debrief-header h1 {
   margin: 0 0 8px 0;
-  font-size: 32px;
-  color: #1e293b;
+  font-size: 36px;
+  color: #000000;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .session-info {
-  color: #64748b;
+  color: #000000;
   font-size: 14px;
+  opacity: 0.8; /* subtle text color for secondary info */
 }
 
 .separator {
   margin: 0 8px;
 }
 
+/* ===== DEBRIEF CARD ===== */
 .debrief-card {
-  background: white;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95); /* slight glass look */
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
   padding: 32px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  color: #000000;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.debrief-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== SECTIONS ===== */
 .section {
   margin-bottom: 32px;
 }
@@ -40,10 +57,14 @@
 
 .section h3 {
   margin: 0 0 16px 0;
-  font-size: 18px;
-  color: #1e293b;
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 8px;
 }
 
+/* ===== RATING STARS ===== */
 .rating-stars {
   display: flex;
   gap: 8px;
@@ -55,78 +76,93 @@
   font-size: 32px;
   cursor: pointer;
   padding: 4px;
-  transition: transform 0.2s;
+  transition: transform 0.2s, filter 0.2s;
   filter: grayscale(100%);
 }
 
 .star-btn.active {
   filter: grayscale(0%);
+  color: #fbbf24; /* gold stars */
 }
 
 .star-btn:hover {
-  transform: scale(1.2);
+  transform: scale(1.3);
 }
 
+/* ===== TEXTAREA ===== */
 textarea {
   width: 100%;
   padding: 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
   font-size: 15px;
   font-family: inherit;
   resize: vertical;
   transition: all 0.2s;
+  color: #000000;
+  background: rgba(255,255,255,0.95);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
 }
 
 textarea:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
+/* ===== CHECKBOX LABELS ===== */
 .checkbox-label {
   display: flex;
   align-items: center;
   gap: 12px;
   cursor: pointer;
   font-size: 15px;
-  color: #334155;
+  color: #000000;
+  transition: color 0.2s;
+}
+
+.checkbox-label:hover {
+  color: #3b82f6;
 }
 
 .checkbox-label input[type="checkbox"] {
   width: 20px;
   height: 20px;
   cursor: pointer;
+  accent-color: #3b82f6; /* checkbox color */
 }
 
+/* ===== ACTION BUTTONS ===== */
 .action-buttons {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
   margin-top: 32px;
   padding-top: 32px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid rgba(0,0,0,0.05);
 }
 
 .primary-btn,
 .secondary-btn {
   padding: 12px 32px;
-  border-radius: 8px;
-  font-weight: 500;
+  border-radius: 12px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   border: none;
   font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .primary-btn {
   background: #3b82f6;
-  color: white;
+  color: #ffffff;
 }
 
 .primary-btn:hover:not(:disabled) {
   background: #2563eb;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
 .primary-btn:disabled {
@@ -135,17 +171,21 @@ textarea:focus {
 }
 
 .secondary-btn {
-  background: white;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid rgba(0,0,0,0.1);
 }
 
 .secondary-btn:hover {
-  background: #f8fafc;
+  background: #f3f4f6;
+  transform: translateY(-2px);
 }
 
+/* ===== LOADING STATE ===== */
 .loading {
   text-align: center;
   padding: 60px;
-  color: #64748b;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 500;
 }

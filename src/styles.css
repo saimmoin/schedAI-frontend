@@ -10,7 +10,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #0f172a;
-  color: #f8fafc;
+  color: #000000;
   position: relative;
   min-height: 100vh;
 }
@@ -178,3 +178,33 @@ input, select, textarea {
 .p-2 { padding: 1rem; }
 .p-3 { padding: 1.5rem; }
 .p-4 { padding: 2rem; }
+
+/* FULLCALENDAR DARK THEME FIX */
+
+.fc {
+  color: #f8fafc !important;
+}
+
+.fc-toolbar-title {
+  color: #f8fafc !important;
+}
+
+.fc-button {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: white !important;
+}
+
+.fc-button:hover {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+.fc-col-header-cell {
+  background: rgba(30, 41, 59, 0.8) !important;
+  color: #f8fafc !important;
+}
+
+.fc-timegrid-slot-label {
+  color: #cbd5e1 !important;
+}
