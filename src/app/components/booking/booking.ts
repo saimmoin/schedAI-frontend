@@ -52,7 +52,7 @@ export class Booking implements OnInit {
     if (!this.selectedDate) return;
     
     this.loading = true;
-    this.api.getAvailableSlots('1', this.selectedDate).subscribe(slots => {
+   this.api.getSlots(1, this.selectedDate.toISOString().split('T')[0]).subscribe((slots: TimeSlot[]) => {
       this.availableSlots = slots;
       this.loading = false;
     });
@@ -74,19 +74,21 @@ export class Booking implements OnInit {
       endTime.setMinutes(endTime.getMinutes() + 30);
 
       const result = await this.api.createAppointment({
-        guestName: this.clientName,
-        guestEmail: this.clientEmail,
+        guest_name: this.clientName,
+        guest_email: this.clientEmail,
         title: this.notes || 'Meeting',
         reason: 'Scheduled meeting',
-        startTime: this.selectedSlot.start,
-        endTime: endTime,
-        workspaceId: 'ws1',
-        hostUserId: '1'
+        start_time: this.selectedSlot.start,
+        end_time: endTime,
+        workspace_id: 1,
+        host_user_id: 1
       }).toPromise();
 
+      console.log('Appointment created:', result);
       // Navigate to calendar to see the new appointment
       this.router.navigate(['/calendar']);
     } catch (error) {
+      console.error('Failed to create appointment:', error);
       alert('Failed to create appointment');
     } finally {
       this.submitting = false;

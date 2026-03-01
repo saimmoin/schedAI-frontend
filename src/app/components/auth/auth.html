@@ -2,12 +2,31 @@
   <div class="auth-card">
     <div class="auth-header">
       <h1>SchedAI</h1>
-      <p>Sign in to manage your appointments</p>
+      <p>{{ isSignUp ? 'Create your account' : 'Sign in to manage your appointments' }}</p>
+    </div>
+
+    <div class="auth-toggle">
+      <button [class.active]="!isSignUp" (click)="isSignUp = false">Sign In</button>
+      <button [class.active]="isSignUp" (click)="isSignUp = true">Sign Up</button>
     </div>
 
     <form (ngSubmit)="onSubmit()" class="auth-form">
       @if (error) {
         <div class="error-message">{{ error }}</div>
+      }
+
+      @if (isSignUp) {
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            [(ngModel)]="name"
+            name="name"
+            placeholder="Your full name"
+            required
+          />
+        </div>
       }
 
       <div class="form-group">
@@ -36,15 +55,19 @@
 
       <button type="submit" class="submit-btn" [disabled]="loading">
         @if (loading) {
-          <span>Signing in...</span>
+          <span>{{ isSignUp ? 'Creating account...' : 'Signing in...' }}</span>
         } @else {
-          <span>Sign In</span>
+          <span>{{ isSignUp ? 'Create Account' : 'Sign In' }}</span>
         }
       </button>
     </form>
 
     <div class="auth-footer">
-      <p>Demo credentials: any email/password</p>
+      <p>{{ isSignUp ? 'Already have an account?' : "Don't have an account?" }}
+        <a (click)="isSignUp = !isSignUp" style="cursor:pointer; text-decoration:underline">
+          {{ isSignUp ? 'Sign In' : 'Sign Up' }}
+        </a>
+      </p>
     </div>
   </div>
 </div>

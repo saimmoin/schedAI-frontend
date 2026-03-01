@@ -29,7 +29,7 @@ export class WaitlistPanel implements OnInit {
     return `status-${status}`;
   }
 
-  formatDate(date: Date): string {
+  formatDate(date: Date | string): string {
     return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric'

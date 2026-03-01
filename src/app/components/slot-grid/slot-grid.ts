@@ -23,7 +23,7 @@ export class SlotGrid {
     return this.selectedSlot?.id === slot.id;
   }
 
-  formatTime(date: Date): string {
+formatTime(date: Date | string): string {
     return new Date(date).toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',

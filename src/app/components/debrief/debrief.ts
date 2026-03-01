@@ -68,7 +68,7 @@ export class Debrief implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
-  formatDate(date: Date): string {
+  formatDate(date: Date | string): string {
     return new Date(date).toLocaleDateString('en-US', {
       weekday: 'long',
       month: 'long',

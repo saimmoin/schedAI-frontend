@@ -119,7 +119,7 @@ export class PublicBooking implements OnInit {
     });
   }
 
-  formatDate(date: Date): string {
+  formatDate(date: Date | string): string {
     return new Date(date).toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
@@ -127,7 +127,7 @@ export class PublicBooking implements OnInit {
     });
   }
 
-  formatTime(date: Date): string {
+  formatTime(date: Date | string): string {
     return new Date(date).toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',

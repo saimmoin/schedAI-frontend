@@ -16,15 +16,14 @@ export class AppointmentCard {
     return `status-${this.appointment.status}`;
   }
 
-  formatTime(date: Date): string {
+  formatTime(date: Date | string): string {
     return new Date(date).toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true
     });
   }
-
-  formatDate(date: Date): string {
+ formatDate(date: Date | string): string {
     return new Date(date).toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',

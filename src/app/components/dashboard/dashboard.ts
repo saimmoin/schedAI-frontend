@@ -61,7 +61,7 @@ export class Dashboard implements OnInit {
     this.showWaitlist = !this.showWaitlist;
   }
 
-  formatTime(date: Date): string {
+  formatTime(date: Date | string): string {
     return new Date(date).toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
@@ -88,7 +88,7 @@ export class Dashboard implements OnInit {
     });
   }
 
-  formatDate(date: Date): string {
+  formatDate(date: Date | string): string {
     return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric'

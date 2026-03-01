@@ -13,11 +13,12 @@ import { Auth } from '../../core/auth';
 export class AuthComponent {
   email = '';
   password = '';
+  name = '';
+  isSignUp = false;
   loading = false;
   error = '';
 
   constructor(private authService: Auth, private router: Router) {
-    // Redirect if already logged in
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/dashboard']);
     }
@@ -28,19 +29,26 @@ export class AuthComponent {
       this.error = 'Please enter email and password';
       return;
     }
+    if (this.isSignUp && !this.name) {
+      this.error = 'Please enter your name';
+      return;
+    }
 
     this.loading = true;
     this.error = '';
 
     try {
-      const success = await this.authService.login(this.email, this.password);
+      const success = this.isSignUp
+        ? await this.authService.register(this.name, this.email, this.password)
+        : await this.authService.login(this.email, this.password);
+
       if (success) {
         this.router.navigate(['/onboarding']);
       } else {
-        this.error = 'Invalid credentials';
+        this.error = this.isSignUp ? 'Registration failed' : 'Invalid credentials';
       }
     } catch (err) {
-      this.error = 'Login failed. Please try again.';
+      this.error = 'Something went wrong. Please try again.';
     } finally {
       this.loading = false;
     }
