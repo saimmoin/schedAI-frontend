@@ -1,0 +1,1 @@
+web: cd sched/SchedAI_BE && python run.py
